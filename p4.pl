@@ -489,9 +489,9 @@ moves(B,L) :-
     not(win(B,x)),                %%% if either player already won, then there are no available moves
     not(win(B,o)),
     blank_mark(E),
-    findall(Column, free_column(B,0,Column), L), 
-    L \= []
-    .
+    indices_of_lists_with(B,E,L), 
+    L \= []. 
+
 
 
 %.......................................
@@ -525,6 +525,24 @@ utility(B,U) :-
 random(B,S):-
     moves(B,L),
     random_member(S, L).
+
+
+
+% Predicate to find indices of lists with 'e'
+indices_of_lists_with(Lists,E, Indices) :-
+    indices_of_lists_with_helper(Lists,E, 0, Indices).
+
+% Helper predicate with accumulator for indices
+indices_of_lists_with_helper([],_, _, []).
+indices_of_lists_with_helper([List|Rest],E, Index, [Index|RestIndices]) :-
+    memberchk('e', List),  % Check if 'e' is a member of the list
+    NewIndex is Index + 1,
+    indices_of_lists_with_helper(Rest,E, NewIndex, RestIndices).
+indices_of_lists_with_helper([_|Rest],E, Index, Indices) :-
+    NewIndex is Index + 1,
+    indices_of_lists_with_helper(Rest,E, NewIndex, Indices).
+
+
 
 %.......................................
 % minimax
