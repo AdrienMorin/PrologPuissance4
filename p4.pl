@@ -450,12 +450,14 @@ make_move2(human, P, B, B2) :-
     make_move2(human,P,B,B2)
     .
 
+
+
 make_move2(computer, P, B, B2) :-
     nl,
     nl,
     write('Computer is thinking about next move...'),
     player_mark(P, M),
-    %minimax(0, B, M, S, U),
+    minimax(0, B, M, S, U),
     random(B,S),
     nth0(S, B, Column),
     find_first_empty_index(Column,0,Line),
@@ -468,6 +470,7 @@ make_move2(computer, P, B, B2) :-
     write(S),
     write('.')
     .
+
 
 
 %.......................................
@@ -516,6 +519,20 @@ utility(B,U) :-
     U = 0
     .
 
+% diagonal
+
+score_diagonal(B) :-
+    
+
+
+
+
+
+
+% Predicat pour transposer un board 2D
+transpose_board(B, TransposedB) :-
+    transpose(B, TransposedB).
+
 
 %.......................................
 % random_algorithm
@@ -555,7 +572,7 @@ indices_of_lists_with_helper([_|Rest],E, Index, Indices) :-
 % Save the user the trouble of waiting  for the computer to search the entire minimax tree 
 % by simply selecting a random square.
 
-minimax(D,[E,E,E, E,E,E, E,E,E],M,S,U) :-   
+minimax(D,[[E,E,E,E,E,E],[E,E,E,E,E,E],[E,E,E,E,E,E],[E,E,E,E,E,E],[E,E,E,E,E,E],[E,E,E,E,E,E],[E,E,E,E,E,E]],M,S,U) :-   
     blank_mark(E),
     random_int_1n(9,S),
     !
@@ -585,8 +602,8 @@ minimax(D,B,M,S,U) :-
 
 % if there is only one move left in the list...
 
-best(D,B,M,[S1],S,U) :-
-    move(B,S1,M,B2),        %%% apply that move to the board,
+best(D,B,M,[Column, Line],S,U) :-
+    move(B,Column, Line,M,B2),        %%% apply that move to the board,
     inverse_mark(M,M2), 
     !,  
     minimax(D,B2,M2,_S,U),  %%% then recursively search for the utility value of that move.
@@ -841,12 +858,12 @@ output_square(B,Column,Line) :-
 
 output_square2(Column,Line, E) :- 
     blank_mark(E),
-    write('e '), !              %%% if square is empty, output the square number
+    write('  '), !              %%% if square is empty, output the square number
     .
 
 output_square2(Column,Line, M) :- 
-    write(M),  
-    write(' '), !             %%% if square is marked, output the mark
+    write(' '),
+    write(M), !             %%% if square is marked, output the mark
     .
 
 output_value(D,Column,Line,U) :-
@@ -869,7 +886,6 @@ output_value(D,Column,Line,U) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PSEUDO-RANDOM NUMBERS 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %.......................................
 % random_seed
 %.......................................
